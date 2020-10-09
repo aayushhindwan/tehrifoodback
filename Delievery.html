@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  
+<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+
+</head>
+<body>
+
+<label style="background-color:white" >Enter Token:</label>
+<input type="text" id="output" value="{localstorage.address}" onchange="ch()"  />
+<label style="background-color:white" >Enter Status:</label>
+         <select id="st" style="background-color:white"  onchange="ch()">
+          <option  >All Order</option>
+          <option value="0">Not Taken</option>
+          <option value="1">Taken </option>
+          <option value="2">Delievered </option>
+</select>
+      <div id="tbb">gjgjuihihiiuhi</div>
+
+<script type="text/javascript">
+  window.onload=async function()
+  { tb='';
+fetch('http://localhost:3000/order/0').then(response => response.json()) 
+    .then(json => { 
+      console.log(json);
+    json.forEach(
+  
+  (item,index)=>{
+    var i='';
+    
+    var x= JSON.parse(item.items);
+    console.log(x);
+    if(item.items)
+    {
+x.forEach(function(a,b){
+i+='<div>'+a.aa+a.bb+'</div>'
+
+});
+}
+    tb=tb+'<div style="padding:10px">'
+     tb+='<div class="card">'
+ tb+='<div class="card-header">'+item.orderId+'</div>'
+  tb+='<div class="card-body">'
+    tb+='<h5 class="card-title">'
+          tb+='<table style="width:100%">'
+     tb+='<tr><th>Restaurant</th> <th>Cost</th> <th>Ordered By</th> <th>Taken By</th> <th>Taken Time</th> <th>OrderTime</th><th>DelievedTime</th> </tr>'
+     tb+='<tr><td>Jill</td>     <td>Jill</td>  <td>Jill</td>  <td>Jill</td>  <td>Jill</td>  <td>Jill</td>  <td>Jill</td></tr>'
+    tb+='</table>'
+       tb+= '</h5>'
+    tb+='<p class="card-text">'+i+'</p>'
+    if(item.stat==0)
+   tb+=' <a href="#" class="btn btn-primary">Take This</a>'
+  tb+='</div>'
+tb+='</div>'
+   tb+= '</div>';
+
+  }
+);
+document.getElementById('tbb').innerHTML = tb; 
+    });
+        
+    document.getElementById('output').value = localStorage.addr;
+  }
+  async function ch()
+  {   
+    await retrieve(document.getElementById('dt').value,document.getElementById('st').value,document.getElementById('output').value);
+    //console.log(event.target.name,event.target.parentElement);
+    console.log(document.getElementById('dt').value);
+    //localStorage.addr=event.target.value;
+  }
+  function retrieve(date,status,token)
+  {
+    console.log(date);
+    console.log(status);
+    console.log(token);
+    fetch('http://localhost:3000/order').then(response => response.json()) 
+    .then(json => { 
+      console.log(json);
+ 
+    json.forEach(
+  
+  (item,index)=>{
+    var i='';
+    
+    var x= JSON.parse(item.items);
+    console.log(x);
+    if(item.items)
+    {
+x.forEach(function(a,b){
+i+='<div>'+a.aa+a.bb+'</div>'
+
+});
+}
+    tb=tb+'<div style="padding:10px">'
+     tb+='<div class="card">'
+ tb+='<div class="card-header">'+item.orderId+'</div>'
+  tb+='<div class="card-body">'
+    tb+='<h5 class="card-title">'
+          tb+='<table style="width:100%">'
+     tb+='<tr><th>Restaurant</th> <th>Cost</th> <th>Ordered By</th> <th>Taken By</th> <th>Taken Time</th> <th>OrderTime</th><th>DelievedTime</th> </tr>'
+     tb+='<tr><td>Jill</td>     <td>Jill</td>  <td>Jill</td>  <td>Jill</td>  <td>Jill</td>  <td>Jill</td>  <td>Jill</td></tr>'
+    tb+='</table>'
+       tb+= '</h5>'
+    tb+='<p class="card-text">'+i+'</p>'
+   tb+=' <a href="#" class="btn btn-primary">Order Location</a>'
+  tb+='</div>'
+tb+='</div>'
+   tb+= '</div>';
+
+  }
+);
+document.getElementById('tbb').innerHTML = tb; 
+    });
+        
+    document.getElementById('output').value = localStorage.addr;
+  }
+
+</script>
+</body>
+</html></html>

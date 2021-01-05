@@ -26,6 +26,9 @@ app.get('/', function(req, res) {
 app.get('/abhishek',function(req,res)
 {
 res.sendfile("./admin.html")
-})
-
+});
+app.get('/dboy',function(req,res)
+{
+res.sendfile("./dboy.html");
+});
 app.listen(80);

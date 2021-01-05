@@ -33,18 +33,7 @@ yy= date.getFullYear().toString() + '-' + (date.getMonth() + 1).toString().padSt
     '-' + date.getDate().toString().padStart(2, 0);
 document.getElementById('dt').value=yy;
 
-fetch('http://localhost/order',{method:"POST",
-    body:JSON.stringify({ 
-    date:yy,
-    stat:3,
-    }), 
-      
-    headers: { 
-        "Content-type": "application/json; charset=UTF-8"
-    } 
-
-
-  }).then(response => response.json()) 
+fetch('http://localhost/fetch/0/'+localStorage.token).then(response => response.json()) 
     .then(json => { 
      // console.log(json);
  
@@ -69,11 +58,14 @@ i+='<div>'+a.item+":"+a.price+'</div>'
     tb+='<h5 class="card-title">'
           tb+='<table style="width:100%">'
      tb+='<tr><th>Restaurant</th> <th>Cost</th> <th>Ordered By</th> <th>Taken By</th> <th>Taken Time</th> <th>OrderTime</th><th>DelievedTime</th> </tr>'
-     tb+='<tr><td>'+item.shop+'</td> <td>'+item.total+'</td>  <td>'+item.username+'</td> <td>'+item.takenBy+'</td><td>'+item.takenTime+'</td><td> '+item.ist+'</td> <td>'+item.delieveredTime+'</td></tr>'
+     tb+='<tr><td>'+item.shop+'</td> <td>'+item.total+'</td>  <td>'+item.username+'</td> <td>'+item.takenBy+'</td><td>'+item.takenTime+'</td><td> '+item.ist+'</td> <td>'+item.deliveredTime+'</td></tr>'
     tb+='</table>'
        tb+= '</h5>'
     tb+='<p class="card-text">'+i+'</p>'
-   tb+=' <a href="#" class="btn btn-primary">Order Location</a>'
+   if(item.stat==0)
+   tb+='<button onclick="changest(1,'+item.orderId+')" class="btn btn-primary">Take This Order</button>'
+    if(item.stat==1)
+   tb+='<button onclick="changest(2,'+item.orderId+')" class="btn btn-primary">I have Delievered</button>'
   tb+='</div>'
 tb+='</div>'
    tb+= '</div>';
@@ -95,25 +87,51 @@ document.getElementById('tbb').innerHTML = tb;
     //localStorage.addr=event.target.value;
 
   }
+  function changest(stat,orderId)
+  {
+    console.log(stat,orderId);
+  fetch('http://localhost/changeStatus/'+stat,{
+    method:"POST",
+    body:JSON.stringify({ 
+    orderId:orderId,
+    dToken:localStorage.token}),
+
+    headers: { 
+        "Content-type": "application/json; charset=UTF-8"
+    } 
+  }).then(response => response.json()).then(json=>{
+
+
+console.log(json);
+if(json.serverres==1)
+{
+  alert("Success!!!");
+  ch();
+}
+else
+{
+  alert("Error");
+}
+
+
+  }); 
+ 
+
+
+
+
+
+
+  }
   function retrieve(date,status,token)
   {
     tb='';
     console.log(date);
     console.log(status);
     console.log(token);
-    fetch('http://localhost/order',{method:"POST",
-    body:JSON.stringify({ 
-       date: date, 
-        stat: status, 
-        token: token 
-    }), 
-      
-    headers: { 
-        "Content-type": "application/json; charset=UTF-8"
-    } 
-
-
-  }).then(response => response.json()) 
+    if(status=="All Order")
+      status=0;
+    fetch('http://localhost/fetch/'+status+'/'+token).then(response => response.json()) 
     .then(json => { 
      // console.log(json);
  
@@ -139,11 +157,14 @@ i+='<div>'+a.item+" "+a.price+'</div>'
     tb+='<h5 class="card-title">'
           tb+='<table style="width:100%">'
      tb+='<tr><th>Restaurant</th> <th>Cost</th> <th>Ordered By</th> <th>Taken By</th> <th>Taken Time</th> <th>OrderTime</th><th>DelievedTime</th> </tr>'
-     tb+='<tr><td>'+item.shop+'</td> <td>'+item.total+'</td>  <td>'+item.username+'</td> <td>'+item.takenBy+'</td><td>'+item.takenTime+'</td><td> '+item.ist+'</td> <td>'+item.delieveredTime+'</td></tr>'
+     tb+='<tr><td>'+item.shop+'</td> <td>'+item.total+'</td>  <td>'+item.username+'</td> <td>'+item.takenBy+'</td><td>'+item.takenTime+'</td><td> '+item.ist+'</td> <td>'+item.deliveredTime+'</td></tr>'
     tb+='</table>'
        tb+= '</h5>'
     tb+='<p class="card-text">'+i+'</p>'
-   tb+=' <a href="#" class="btn btn-primary">Order Location</a>'
+    if(item.stat==0)
+   tb+='<button onclick="changest(1,'+item.orderId+')" class="btn btn-primary">Take This Order</button>'
+    if(item.stat==1)
+   tb+='<button onclick="changest(2,'+item.orderId+')" class="btn btn-primary">I have Delievered</button>'
   tb+='</div>'
 tb+='</div>'
    tb+= '</div>';

@@ -2,13 +2,19 @@ const express=require('express');
 const router=express.Router();
 //router.use(authD);
 db=require('../sqlconnection.js');
-router.post('/:status',async function(req,res){
-status=req.params.status;
-orderid=req.body.id;
+router.post('/:stat',async function(req,res){
+var status=req.params.stat;
+var orderid=req.body.orderId;
+console.log("dboy came");
 db.query("SELECT stat from orders where orderId=?",orderid,(err,result)=>{
+  if(err)
+   { console.log(err);  res.send({serverres:-1});   }
+  else{
+
    var st=result[0].stat;
+status=parseInt(status);
 if(st==0&&status==1)
-{db.query("update orders set stat=?, takenBy=? where orderId=? ",[status,req.body.dName,orderid],function(err,result){
+{ db.query("update orders set stat=?, takenBy=?,takenTime=convert_tz(current_timestamp,'+00:00','+05:30') where orderId=? ",[status,req.body.dToken,orderid],function(err,result){
      if(!err)  
    {
       res.send({serverres:1}); }
@@ -20,7 +26,8 @@ if(st==0&&status==1)
 }
 else if(st==1&&status==2)
 {
-  db.query("update  orders set stat=? where orderId=? ",[status,orderid],function(err,result){
+  console.log(status,orderid);
+  db.query("update  orders set stat=? ,deliveredTime=convert_tz(current_timestamp,'+00:00','+05:30') where orderId=?  ",[status,orderid],function(err,result){
    if(!err)
    res.send({serverres:1});
    else
@@ -30,6 +37,7 @@ else if(st==1&&status==2)
 }
 else
 {res.send({serverres:0});
+}
 }
 }
 );

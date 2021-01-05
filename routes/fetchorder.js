@@ -2,25 +2,24 @@ const express=require('express');
 const router=express.Router();
 //router.use(authD);
 db=require('../sqlconnection.js');
-router.get('/all',async function(req,res)
+router.get('/:stat/:token',async function(req,res)
 {
    console.log("FETCH REQUEST CAME");
-    var date ="2020-10-01%";
-db.query("SELECT * from orders where orderTime like ? ",date,function(err,result){
-
-    res.send(result);
+   var status=req.params.stat;
+   var token=req.params.token;
+    if(status==0){
+db.query("SELECT * from orders where date(orderTime)=current_date and stat=?",status,function(err,result){
+   console.log(result);
+   console.log(status);
+   res.send(result);
 })
-});
-router.get('/delievered:token',async function(req,res)
-{
-    
-});
-router.get('/taken',async function(req,res)
-{
 
-});
-router.get('/nottaken',async function(req,res)
-{
-
+}
+ if(status==1||status==2)
+ {
+ db.query("SELECT * from orders where date(orderTime)=current_date and stat=? and takenBy=?",[status,token],function(err,result){
+   res.send(result);
+});	
+ }
 });
 module.exports=router;
